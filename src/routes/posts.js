@@ -9,7 +9,7 @@ router.get("/", async (req, res) => {
     const data = await Post.find();
     res.status(200).json({
       result: data,
-      message: "Data successfully retrieved",
+      message: "Post successfully retrieved",
     });
   } catch (error) {
     res.status(500).json({
@@ -26,7 +26,7 @@ router.get("/:id", async (req, res) => {
     });
     res.status(200).json({
       result: data,
-      message: "Data successfully retrieved",
+      message: "Post successfully retrieved",
     });
   } catch (error) {
     res.status(500).json({
@@ -40,8 +40,9 @@ router.post("/", async (req, res) => {
   try {
     const newPost = new Post(req.body);
     await newPost.save();
+
     res.status(200).json({
-      message: "Data successfully added",
+      message: "Post successfully added",
     });
   } catch (err) {
     res.status(500).json({
@@ -55,7 +56,7 @@ router.post("/all", async (req, res) => {
   try {
     await Post.insertMany(req.body);
     res.status(200).json({
-      message: "Data successfully added",
+      message: "Post successfully added",
     });
   } catch (error) {
     res.status(500).json({
@@ -76,7 +77,7 @@ router.put("/:id", async (req, res) => {
       }
     );
     res.status(200).json({
-      message: "Data successfully updated",
+      message: "Post successfully updated",
     });
   } catch (error) {
     console.error(error);
@@ -94,7 +95,7 @@ router.delete("/:id", async (req, res) => {
     if (result.deletedCount === 1) {
       // Document was deleted successfully
       res.status(200).json({
-        message: "Data successfully deleted",
+        message: "Post successfully deleted",
       });
     } else {
       // Document with the given ID was not found
