@@ -6,9 +6,21 @@ const Post = require("../models/postModel");
 // GET ALL
 router.get("/", async (req, res) => {
   try {
-    const data = await Post.find();
+    const page = parseInt(req.query.page) || 1;
+    const pageSize = 5;
+
+    const totalPosts = await Post.countDocuments();
+    const totalPages = Math.ceil(totalPosts / pageSize);
+
+    const data = await Post.find()
+      .sort({ createdAt: -1 })
+      .skip((page - 1) * pageSize)
+      .limit(pageSize);
+
     res.status(200).json({
-      result: data,
+      data,
+      currentPage: page,
+      totalPages,
       message: "Post successfully retrieved",
     });
   } catch (error) {
@@ -71,9 +83,7 @@ router.put("/:id", async (req, res) => {
     await Post.updateOne(
       { _id: req.params.id },
       {
-        $set: {
-          status: "active",
-        },
+        $set: req.body,
       }
     );
     res.status(200).json({

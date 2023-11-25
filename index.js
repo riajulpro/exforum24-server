@@ -23,12 +23,14 @@ const postsRouter = require("./src/routes/posts");
 const commentsRouter = require("./src/routes/comments");
 const reportsRouter = require("./src/routes/reports");
 const usersRouter = require("./src/routes/users");
+const announcementsRouter = require("./src/routes/announcements");
 
 // Route files as needed
 app.use("/posts", postsRouter);
 app.use("/comments", commentsRouter);
 app.use("/reports", reportsRouter);
 app.use("/users", usersRouter);
+app.use("/announcements", announcementsRouter);
 
 // Start server
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

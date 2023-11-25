@@ -1,15 +1,15 @@
 const express = require("express");
 const router = express.Router();
 
-const Comment = require("../models/commentModel");
+const Announcement = require("../models/announcementModel");
 
 // GET ALL
 router.get("/", async (req, res) => {
   try {
-    const data = await Comment.find();
+    const data = await Announcement.find();
     res.status(200).json({
       data,
-      message: "Comment successfully retrieved",
+      message: "Announcement successfully retrieved",
     });
   } catch (error) {
     res.status(500).json({
@@ -21,7 +21,7 @@ router.get("/", async (req, res) => {
 // GET ONE
 router.get("/:id", async (req, res) => {
   try {
-    const data = await Comment.find({
+    const data = await Announcement.find({
       _id: req.params.id,
     });
     res.status(200).json({
@@ -38,10 +38,10 @@ router.get("/:id", async (req, res) => {
 // POST ONE
 router.post("/", async (req, res) => {
   try {
-    const newPost = new Comment(req.body);
+    const newPost = new Announcement(req.body);
     await newPost.save();
     res.status(200).json({
-      message: "Comment successfully added",
+      message: "Announcement successfully added",
     });
   } catch (err) {
     res.status(500).json({
@@ -53,9 +53,9 @@ router.post("/", async (req, res) => {
 // POST ALL
 router.post("/all", async (req, res) => {
   try {
-    await Comment.insertMany(req.body);
+    await Announcement.insertMany(req.body);
     res.status(200).json({
-      message: "Comment successfully added",
+      message: "Announcement successfully added",
     });
   } catch (error) {
     res.status(500).json({
@@ -67,7 +67,7 @@ router.post("/all", async (req, res) => {
 // PUT ONE: UPDATE
 router.put("/:id", async (req, res) => {
   try {
-    await Comment.updateOne(
+    await Announcement.updateOne(
       { _id: req.params.id },
       {
         $set: {
@@ -89,12 +89,12 @@ router.put("/:id", async (req, res) => {
 // DELETE ONE
 router.delete("/:id", async (req, res) => {
   try {
-    const result = await Comment.deleteOne({ _id: req.params.id });
+    const result = await Announcement.deleteOne({ _id: req.params.id });
 
     if (result.deletedCount === 1) {
       // Document was deleted successfully
       res.status(200).json({
-        message: "Comment successfully deleted",
+        message: "Announcement successfully deleted",
       });
     } else {
       // Document with the given ID was not found

@@ -8,7 +8,7 @@ router.get("/", async (req, res) => {
   try {
     const data = await User.find();
     res.status(200).json({
-      result: data,
+      data,
       message: "User successfully retrieved",
     });
   } catch (error) {
