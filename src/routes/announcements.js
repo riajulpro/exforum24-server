@@ -6,7 +6,8 @@ const Announcement = require("../models/announcementModel");
 // GET ALL
 router.get("/", async (req, res) => {
   try {
-    const data = await Announcement.find();
+    const data = await Announcement.find().sort({ createdAt: -1 });
+    
     res.status(200).json({
       data,
       message: "Announcement successfully retrieved",

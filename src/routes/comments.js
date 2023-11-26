@@ -6,7 +6,7 @@ const Comment = require("../models/commentModel");
 // GET ALL
 router.get("/", async (req, res) => {
   try {
-    const data = await Comment.find();
+    const data = await Comment.find().sort({ createdAt: -1 });
     res.status(200).json({
       data,
       message: "Comment successfully retrieved",

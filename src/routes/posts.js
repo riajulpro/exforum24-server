@@ -30,6 +30,53 @@ router.get("/", async (req, res) => {
   }
 });
 
+// GET SPECIFIC BY SEARCH
+router.get("/search", async (req, res) => {
+  try {
+    const search = req.query.q;
+
+    const query = { tags: { $in: [search] } };
+
+    const data = await Post.find(query);
+
+    res.status(200).json({
+      data,
+      message: "Search result successfully retrieved",
+    });
+  } catch (error) {
+    res.status(500).json({
+      error: "There was a server error!",
+    });
+  }
+});
+// GET ALL ITEMS AT ONCE
+router.get("/tags", async (req, res) => {
+  try {
+    const data = await Post.find();
+
+    const uniqueTagsSet = new Set();
+
+    // Iterate through each object and its tags
+    data.forEach((obj) => {
+      obj.tags.forEach((tag) => {
+        uniqueTagsSet.add(tag);
+      });
+    });
+
+    // Convert Set to array to get the unique tags
+    const uniqueTagsArray = [...uniqueTagsSet];
+
+    res.status(200).json({
+      uniqueTags: uniqueTagsArray,
+      message: "Search result successfully retrieved",
+    });
+  } catch (error) {
+    res.status(500).json({
+      error: "There was a server error!",
+    });
+  }
+});
+
 // GET ONE
 router.get("/:id", async (req, res) => {
   try {
@@ -37,7 +84,7 @@ router.get("/:id", async (req, res) => {
       _id: req.params.id,
     });
     res.status(200).json({
-      result: data,
+      data,
       message: "Post successfully retrieved",
     });
   } catch (error) {
