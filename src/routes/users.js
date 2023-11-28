@@ -22,11 +22,12 @@ router.get("/", async (req, res) => {
 });
 
 // GET ONE
-router.get("/:email", checkToken, async (req, res) => {
+router.get("/:email", async (req, res) => {
   try {
     const data = await User.find({
       email: req.params.email,
     });
+
     res.status(200).json({
       data,
       message: "Data successfully retrieved",

@@ -131,7 +131,7 @@ router.post("/", checkToken, async (req, res) => {
 });
 
 // PUT ONE: UPDATE
-router.put("/:id", checkToken, async (req, res) => {
+router.put("/:id", async (req, res) => {
   try {
     await Post.updateOne(
       { _id: req.params.id },
@@ -151,7 +151,7 @@ router.put("/:id", checkToken, async (req, res) => {
 });
 
 // DELETE ONE
-router.delete("/:id", checkToken, async (req, res) => {
+router.delete("/:id", async (req, res) => {
   try {
     const result = await Post.deleteOne({ _id: req.params.id });
 

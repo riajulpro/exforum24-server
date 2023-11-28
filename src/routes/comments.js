@@ -20,6 +20,23 @@ router.get("/", async (req, res) => {
   }
 });
 
+// GET FOR THE POST
+router.get("/for-post/:id", async (req, res) => {
+  try {
+    const data = await Comment.find({ forPost: req.params.id }).sort({
+      createdAt: -1,
+    });
+    res.status(200).json({
+      data,
+      message: "Comment successfully retrieved",
+    });
+  } catch (error) {
+    res.status(500).json({
+      error: "There was a server error!",
+    });
+  }
+});
+
 // GET ONE
 router.get("/:id", async (req, res) => {
   try {
@@ -38,7 +55,7 @@ router.get("/:id", async (req, res) => {
 });
 
 // POST ONE
-router.post("/", checkToken, async (req, res) => {
+router.post("/", async (req, res) => {
   try {
     const newPost = new Comment(req.body);
     await newPost.save();
@@ -53,7 +70,7 @@ router.post("/", checkToken, async (req, res) => {
 });
 
 // PUT ONE: UPDATE
-router.put("/:id", checkToken, async (req, res) => {
+router.put("/:id", async (req, res) => {
   try {
     await Comment.updateOne(
       { _id: req.params.id },
@@ -75,7 +92,7 @@ router.put("/:id", checkToken, async (req, res) => {
 });
 
 // DELETE ONE
-router.delete("/:id", checkToken, async (req, res) => {
+router.delete("/:id", async (req, res) => {
   try {
     const result = await Comment.deleteOne({ _id: req.params.id });
 
