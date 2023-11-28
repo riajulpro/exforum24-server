@@ -3,6 +3,8 @@ const router = express.Router();
 
 const Post = require("../models/postModel");
 
+const checkToken = require("../middlewares/authentication/verifyToken");
+
 // GET ALL
 router.get("/", async (req, res) => {
   try {
@@ -21,6 +23,23 @@ router.get("/", async (req, res) => {
       data,
       currentPage: page,
       totalPages,
+      message: "Post successfully retrieved",
+    });
+  } catch (error) {
+    res.status(500).json({
+      error: "There was a server error!",
+    });
+  }
+});
+
+router.get("/mine/:id", async (req, res) => {
+  try {
+    const data = await Post.find({ author: req.params.id }).sort({
+      createdAt: -1,
+    });
+
+    res.status(200).json({
+      data,
       message: "Post successfully retrieved",
     });
   } catch (error) {
@@ -49,6 +68,7 @@ router.get("/search", async (req, res) => {
     });
   }
 });
+
 // GET ALL ITEMS AT ONCE
 router.get("/tags", async (req, res) => {
   try {
@@ -95,7 +115,7 @@ router.get("/:id", async (req, res) => {
 });
 
 // POST ONE
-router.post("/", async (req, res) => {
+router.post("/", checkToken, async (req, res) => {
   try {
     const newPost = new Post(req.body);
     await newPost.save();
@@ -110,22 +130,8 @@ router.post("/", async (req, res) => {
   }
 });
 
-// POST ALL
-router.post("/all", async (req, res) => {
-  try {
-    await Post.insertMany(req.body);
-    res.status(200).json({
-      message: "Post successfully added",
-    });
-  } catch (error) {
-    res.status(500).json({
-      error: "There was a server error!",
-    });
-  }
-});
-
 // PUT ONE: UPDATE
-router.put("/:id", async (req, res) => {
+router.put("/:id", checkToken, async (req, res) => {
   try {
     await Post.updateOne(
       { _id: req.params.id },
@@ -145,7 +151,7 @@ router.put("/:id", async (req, res) => {
 });
 
 // DELETE ONE
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", checkToken, async (req, res) => {
   try {
     const result = await Post.deleteOne({ _id: req.params.id });
 
