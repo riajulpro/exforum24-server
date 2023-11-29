@@ -115,7 +115,7 @@ router.get("/:id", async (req, res) => {
 });
 
 // POST ONE
-router.post("/", checkToken, async (req, res) => {
+router.post("/", async (req, res) => {
   try {
     const newPost = new Post(req.body);
     await newPost.save();

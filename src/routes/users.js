@@ -24,7 +24,7 @@ router.get("/", async (req, res) => {
 // GET ONE
 router.get("/:email", async (req, res) => {
   try {
-    const data = await User.find({
+    const data = await User.findOne({
       email: req.params.email,
     });
 
@@ -55,7 +55,7 @@ router.post("/", async (req, res) => {
 });
 
 // PUT ONE: UPDATE
-router.put("/:id", checkToken, checkAdmin, async (req, res) => {
+router.put("/:id", async (req, res) => {
   try {
     await User.updateOne(
       { _id: req.params.id },

@@ -11,6 +11,9 @@ const commentSchema = new mongoose.Schema({
     ref: "Post",
     required: true,
   },
+  commenterEmail: {
+    type: String,
+  },
   text: {
     type: String,
     maxlength: 300,

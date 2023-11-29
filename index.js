@@ -6,6 +6,7 @@ const jwt = require("jsonwebtoken");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
 require("dotenv").config();
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 // Initialize the application
 const app = express();
@@ -35,9 +36,26 @@ app.post("/jwt", async (req, res) => {
     .send({ success: true });
 });
 
+// payment intent
+app.post("/create-payment-intent", async (req, res) => {
+  const { price } = req.body;
+  const amount = parseInt(price * 100);
+  console.log(amount, "amount inside the intent");
+
+  const paymentIntent = await stripe.paymentIntents.create({
+    amount: amount,
+    currency: "usd",
+    payment_method_types: ["card"],
+  });
+
+  res.send({
+    clientSecret: paymentIntent.client_secret,
+  });
+});
+
 // MongoDB Connection
 mongoose
-  .connect("mongodb://localhost/exForum")
+  .connect(process.env.MONGODB_URI)
   .then(() => console.log("Database successfully connected!"))
   .catch((error) => console.log(error));
 
@@ -47,6 +65,7 @@ const commentsRouter = require("./src/routes/comments");
 const reportsRouter = require("./src/routes/reports");
 const usersRouter = require("./src/routes/users");
 const announcementsRouter = require("./src/routes/announcements");
+const { default: Stripe } = require("stripe");
 
 // Route files as needed
 app.use("/posts", postsRouter);
