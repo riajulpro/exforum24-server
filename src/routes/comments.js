@@ -55,7 +55,7 @@ router.get("/:id", async (req, res) => {
 });
 
 // POST ONE
-router.post("/", async (req, res) => {
+router.post("/", checkToken, async (req, res) => {
   try {
     const newPost = new Comment(req.body);
     await newPost.save();
