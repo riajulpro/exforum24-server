@@ -11,11 +11,19 @@ router.get("/", async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const pageSize = 5;
 
+    console.log(req.query.sort);
+
     const totalPosts = await Post.countDocuments();
     const totalPages = Math.ceil(totalPosts / pageSize);
 
+    let sortCriteria = { createdAt: -1 };
+
+    if (req.query.sort === "popularity") {
+      sortCriteria = { popularity: -1 };
+    }
+
     const data = await Post.find()
-      .sort({ createdAt: -1 })
+      .sort(sortCriteria)
       .skip((page - 1) * pageSize)
       .limit(pageSize);
 

@@ -34,6 +34,10 @@ const postSchema = new mongoose.Schema({
   },
 });
 
+postSchema.virtual("popularity").get(function () {
+  return this.upVotes - this.downVotes;
+});
+
 const Post = mongoose.model("Post", postSchema);
 
 module.exports = Post;
