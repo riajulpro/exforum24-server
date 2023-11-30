@@ -31,15 +31,41 @@ router.get("/", async (req, res) => {
     });
   }
 });
-
-router.get("/mine/:id", async (req, res) => {
+// GET ALL count
+router.get("/totalPosts", async (req, res) => {
   try {
-    const data = await Post.find({ author: req.params.id }).sort({
-      createdAt: -1,
+    const totalPosts = await Post.countDocuments();
+
+    res.status(200).json({
+      totalPosts,
+      message: "Post successfully retrieved",
     });
+  } catch (error) {
+    res.status(500).json({
+      error: "There was a server error!",
+    });
+  }
+});
+
+router.get("/mine/:id", checkToken, async (req, res) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const pageSize = 10;
+
+    const totalMyPosts = await Post.countDocuments();
+    const totalPages = Math.ceil(totalMyPosts / pageSize);
+
+    const data = await Post.find({ author: req.params.id })
+      .sort({
+        createdAt: -1,
+      })
+      .skip((page - 1) * pageSize)
+      .limit(pageSize);
 
     res.status(200).json({
       data,
+      currentPage: page,
+      totalPages,
       message: "Post successfully retrieved",
     });
   } catch (error) {
@@ -115,7 +141,7 @@ router.get("/:id", async (req, res) => {
 });
 
 // POST ONE
-router.post("/", async (req, res) => {
+router.post("/", checkToken, async (req, res) => {
   try {
     const newPost = new Post(req.body);
     await newPost.save();
@@ -151,7 +177,7 @@ router.put("/:id", async (req, res) => {
 });
 
 // DELETE ONE
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", checkToken, async (req, res) => {
   try {
     const result = await Post.deleteOne({ _id: req.params.id });
 

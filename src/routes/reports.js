@@ -3,13 +3,28 @@ const router = express.Router();
 
 const Report = require("../models/reportModel");
 
+const checkToken = require("../middlewares/authentication/verifyToken");
+const checkAdmin = require("../middlewares/authentication/verifyAdmin");
+
 // GET ALL
-router.get("/", async (req, res) => {
+router.get("/", checkToken, checkAdmin, async (req, res) => {
   try {
-    const data = await Report.find();
+    const page = parseInt(req.query.page) || 1;
+    const pageSize = 10;
+
+    const totalReports = await Report.countDocuments();
+    const totalPages = Math.ceil(totalReports / pageSize);
+
+    const data = await Report.find()
+      .sort({ createdAt: -1 })
+      .skip((page - 1) * pageSize)
+      .limit(pageSize);
+
     res.status(200).json({
-      result: data,
-      message: "Report successfully retrieved",
+      data,
+      currentPage: page,
+      totalPages,
+      message: "Users successfully retrieved",
     });
   } catch (error) {
     res.status(500).json({

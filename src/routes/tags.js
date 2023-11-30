@@ -1,51 +1,18 @@
 const express = require("express");
 const router = express.Router();
 
-const Comment = require("../models/commentModel");
+const Tags = require("../models/tagsModel");
 
 const checkToken = require("../middlewares/authentication/verifyToken");
+const checkAdmin = require("../middlewares/authentication/verifyAdmin");
 
 // GET ALL
-router.get("/", async (req, res) => {
+router.get("/", checkToken, async (req, res) => {
   try {
-    const data = await Comment.find().sort({ createdAt: -1 });
+    const data = await Tags.find();
     res.status(200).json({
       data,
-      message: "Comment successfully retrieved",
-    });
-  } catch (error) {
-    res.status(500).json({
-      error: "There was a server error!",
-    });
-  }
-});
-
-// GET FOR THE POST
-router.get("/for-post/:id", async (req, res) => {
-  try {
-    const data = await Comment.find({ forPost: req.params.id }).sort({
-      createdAt: -1,
-    });
-    res.status(200).json({
-      data,
-      message: "Comment successfully retrieved",
-    });
-  } catch (error) {
-    res.status(500).json({
-      error: "There was a server error!",
-    });
-  }
-});
-
-// GET ONE
-router.get("/:id", async (req, res) => {
-  try {
-    const data = await Comment.find({
-      _id: req.params.id,
-    });
-    res.status(200).json({
-      result: data,
-      message: "Data successfully retrieved",
+      message: "Tags successfully retrieved",
     });
   } catch (error) {
     res.status(500).json({
@@ -57,10 +24,10 @@ router.get("/:id", async (req, res) => {
 // POST ONE
 router.post("/", async (req, res) => {
   try {
-    const newPost = new Comment(req.body);
+    const newPost = new Tags(req.body);
     await newPost.save();
     res.status(200).json({
-      message: "Comment successfully added",
+      message: "Tags successfully added",
     });
   } catch (err) {
     res.status(500).json({
@@ -69,10 +36,10 @@ router.post("/", async (req, res) => {
   }
 });
 
-// PUT ONE: UPDATE
+// PUT ONE: UPDATE ONE
 router.put("/:id", async (req, res) => {
   try {
-    await Comment.updateOne(
+    await Tags.updateOne(
       { _id: req.params.id },
       {
         $set: {
@@ -92,14 +59,14 @@ router.put("/:id", async (req, res) => {
 });
 
 // DELETE ONE
-router.delete("/:id", checkToken, async (req, res) => {
+router.delete("/:id", checkToken, checkAdmin, async (req, res) => {
   try {
-    const result = await Comment.deleteOne({ _id: req.params.id });
+    const result = await Tags.deleteOne({ _id: req.params.id });
 
     if (result.deletedCount === 1) {
       // Document was deleted successfully
       res.status(200).json({
-        message: "Comment successfully deleted",
+        message: "Tags successfully deleted",
       });
     } else {
       // Document with the given ID was not found

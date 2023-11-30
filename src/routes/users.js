@@ -21,6 +21,33 @@ router.get("/", async (req, res) => {
   }
 });
 
+// Get users page by page
+router.get("/pages", async (req, res) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const pageSize = 10;
+
+    const totalUsers = await User.countDocuments();
+    const totalPages = Math.ceil(totalUsers / pageSize);
+
+    const data = await User.find()
+      .sort({ createdAt: -1 })
+      .skip((page - 1) * pageSize)
+      .limit(pageSize);
+
+    res.status(200).json({
+      data,
+      currentPage: page,
+      totalPages,
+      message: "Users successfully retrieved",
+    });
+  } catch (error) {
+    res.status(500).json({
+      error: "There was a server error!",
+    });
+  }
+});
+
 // GET ONE
 router.get("/:email", async (req, res) => {
   try {

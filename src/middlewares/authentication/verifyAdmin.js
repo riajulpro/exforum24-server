@@ -3,6 +3,7 @@ const User = require("../../models/userModel");
 const verifyAdmin = async (req, res, next) => {
   try {
     const email = req.decode.email;
+
     const user = await User.findOne({ email });
 
     if (!user || !user.isAdmin) {

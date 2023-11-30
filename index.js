@@ -53,7 +53,7 @@ app.post("/create-payment-intent", async (req, res) => {
   });
 });
 
-// MongoDB Connection
+// MongoDB Connection process.env.MONGODB_URI
 mongoose
   .connect(process.env.MONGODB_URI)
   .then(() => console.log("Database successfully connected!"))
@@ -65,6 +65,7 @@ const commentsRouter = require("./src/routes/comments");
 const reportsRouter = require("./src/routes/reports");
 const usersRouter = require("./src/routes/users");
 const announcementsRouter = require("./src/routes/announcements");
+const tagsRouter = require("./src/routes/tags");
 const { default: Stripe } = require("stripe");
 
 // Route files as needed
@@ -73,6 +74,7 @@ app.use("/comments", commentsRouter);
 app.use("/reports", reportsRouter);
 app.use("/users", usersRouter);
 app.use("/announcements", announcementsRouter);
+app.use("/tags", tagsRouter);
 
 // Start server
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
